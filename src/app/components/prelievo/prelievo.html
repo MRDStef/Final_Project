@@ -1,1 +1,89 @@
-<p>prelievo works!</p>
+<div class="preleva-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>🏦 Preleva Denaro</h2>
+      <p>Preleva fondi dal tuo conto</p>
+    </div>
+    
+    <div class="card-body">
+      <!-- Saldo attuale -->
+      <div class="balance-info">
+        @if (checkingBalance()) {
+          <div class="balance-loading">Verifica saldo in corso...</div>
+        } @else {
+          <div class="balance-available">
+            <span>Saldo disponibile:</span>
+            <strong>{{ currentBalance | number:'1.2-2' }} €</strong>
+          </div>
+        }
+      </div>
+      
+      <!-- Messaggio successo -->
+      @if (success()) {
+        <div class="alert success">
+          ✓ Prelievo effettuato con successo!
+          <br>Reindirizzamento ai movimenti...
+        </div>
+      }
+      
+      <!-- Messaggio errore -->
+      @if (error()) {
+        <div class="alert error">
+          ⚠ {{ error() }}
+        </div>
+      }
+      
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" #withdrawForm="ngForm">
+        <div class="form-group">
+          <label for="amount">Importo (€) *</label>
+          <input 
+            type="number" 
+            id="amount" 
+            name="amount"
+            [(ngModel)]="amount"
+            step="0.01"
+            min="0.01"
+            [max]="currentBalance"
+            placeholder="es. 50.00"
+            required
+            [class.error-input]="amountError()"
+          >
+          @if (amountError()) {
+            <div class="field-error">{{ amountError() }}</div>
+          }
+          <div class="field-hint">Importo massimo prelevabile: {{ currentBalance | number:'1.2-2' }} €</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Descrizione *</label>
+          <input 
+            type="text" 
+            id="description" 
+            name="description"
+            [(ngModel)]="description"
+            placeholder="es. Spesa, Bolletta, Ristorante..."
+            required
+            [class.error-input]="descriptionError()"
+          >
+          @if (descriptionError()) {
+            <div class="field-error">{{ descriptionError() }}</div>
+          }
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="resetForm()">
+            Cancella
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="loading() || checkingBalance()">
+            @if (loading()) {
+              <span>⏳ Elaborazione...</span>
+            } @else {
+              <span>🏦 Preleva</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -12,3 +12,21 @@ router-outlet {
     align-items: center;
     padding-top: 20px;
 }
+
+.app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .main-content {
+      margin-left: 280px;
+      flex: 1;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+    
+    .main-content-full {
+      flex: 1;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }

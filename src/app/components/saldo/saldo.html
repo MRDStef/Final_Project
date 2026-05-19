@@ -1,1 +1,23 @@
-<p>saldo works!</p>
+<div class="saldo-container">
+  <div class="saldo-card">
+    <h2>💰 Il tuo Saldo</h2>
+
+    @if (loading()) {
+    <div class="loading">Caricamento in corso...</div>
+    }
+
+    @if (error()) {
+    <div class="error">{{ error() }}</div>
+    }
+
+    @if (!loading() && !error()) {
+    <div class="saldo-importo">
+      {{ saldo() | number:'1.2-2' }} {{ currency() }}
+    </div>
+
+    <button (click)="loadBalance()" class="refresh-btn">
+      🔄 Aggiorna
+    </button>
+    }
+  </div>
+</div>

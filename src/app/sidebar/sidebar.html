@@ -1,19 +1,40 @@
-<nav>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h1>Banking App</h1>
-        </div>
-        <div class="sidebar-links">
-            <a routerLink="/saldo">Saldo</a><br>
-            <a routerLink="/movimenti">Movimenti</a><br>
-            <a routerLink="/deposito">Deposito</a><br>
-            <a routerLink="/prelievo">Prelievo</a><br>
-            <a routerLink="/conversione">Conversione</a>
-        </div>
+<div class="sidebar">
+      <div class="sidebar-header">
+        <h2>🏦 Mini Banking</h2>
+        <p>Benvenuto, {{ userName() }}</p>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a routerLink="/movimenti" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Movimenti</span>
+        </a>
+        
+        <a routerLink="/deposita" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span class="nav-text">Deposita</span>
+        </a>
+        
+        <a routerLink="/preleva" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">🏦</span>
+          <span class="nav-text">Preleva</span>
+        </a>
+        
+        <a routerLink="/saldo" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">💳</span>
+          <span class="nav-text">Saldo</span>
+        </a>
+        
+        <a routerLink="/conversione" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">💱</span>
+          <span class="nav-text">Conversioni</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button (click)="logout()" class="logout-btn">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Logout</span>
+        </button>
+      </div>
     </div>
-    <div>
-        <!-- select account  -->
-        <select name="" id=""></select>
-    </div>
-</nav>
-<br><br><br>

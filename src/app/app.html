@@ -1,5 +1,8 @@
-<div class="flex h-screen">
-  <app-sidebar class="sidebar">
-  </app-sidebar>
-  <router-outlet></router-outlet>
-</div>
+<div class="app-container">
+      @if (showSidebar()) {
+        <app-sidebar />
+      }
+      <div [class.main-content]="showSidebar()" [class.main-content-full]="!showSidebar()">
+        <router-outlet />
+      </div>
+    </div>
