@@ -23,9 +23,33 @@ class BankingController
         return $this->jsonResponse($response, ['error' => $message], $status);
     }
     
+    private function getAuthenticatedUserId(): ?int
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        return $_SESSION['user_id'] ?? null;
+    }
+    
+    private function checkAuth(Response $response): ?int
+    {
+        $accountId = $this->getAuthenticatedUserId();
+        if (!$accountId) {
+            return null;
+        }
+        return $accountId;
+    }
+    
+    // ========== TRANSACTIONS ==========
+    
     public function getTransactions(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         $account = Account::find($accountId);
         if (!$account) {
@@ -38,8 +62,12 @@ class BankingController
     
     public function getTransaction(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $transactionId = (int)$args['tid'];
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         $account = Account::find($accountId);
         if (!$account) {
@@ -54,10 +82,39 @@ class BankingController
         return $this->jsonResponse($response, $transaction);
     }
     
+    // ========== DEPOSITS ==========
+    
+    public function getDeposits(Request $request, Response $response, array $args): Response
+    {
+        $accountId = $this->getAuthenticatedUserId();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
+        
+        $account = Account::find($accountId);
+        if (!$account) {
+            return $this->errorResponse($response, 'Account not found', 404);
+        }
+        
+        $deposits = Transaction::getDeposits($accountId);
+        
+        return $this->jsonResponse($response, [
+            'account_id' => $accountId,
+            'total_deposits' => array_sum(array_column($deposits, 'amount')),
+            'count' => count($deposits),
+            'deposits' => $deposits
+        ]);
+    }
+    
     public function postDeposit(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $data = $request->getParsedBody();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         if (!isset($data['amount']) || !is_numeric($data['amount']) || $data['amount'] <= 0) {
             return $this->errorResponse($response, 'Amount must be greater than zero', 400);
@@ -84,10 +141,39 @@ class BankingController
         ], 201);
     }
     
+    // ========== WITHDRAWALS ==========
+    
+    public function getWithdrawals(Request $request, Response $response, array $args): Response
+    {
+        $accountId = $this->getAuthenticatedUserId();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
+        
+        $account = Account::find($accountId);
+        if (!$account) {
+            return $this->errorResponse($response, 'Account not found', 404);
+        }
+        
+        $withdrawals = Transaction::getWithdrawals($accountId);
+        
+        return $this->jsonResponse($response, [
+            'account_id' => $accountId,
+            'total_withdrawals' => array_sum(array_column($withdrawals, 'amount')),
+            'count' => count($withdrawals),
+            'withdrawals' => $withdrawals
+        ]);
+    }
+    
     public function postWithdrawal(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $data = $request->getParsedBody();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         if (!isset($data['amount']) || !is_numeric($data['amount']) || $data['amount'] <= 0) {
             return $this->errorResponse($response, 'Amount must be greater than zero', 400);
@@ -119,16 +205,21 @@ class BankingController
         ], 201);
     }
     
+    // ========== BALANCE ==========
+    
     public function getBalance(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         $account = Account::find($accountId);
         if (!$account) {
             return $this->errorResponse($response, 'Account not found', 404);
         }
         
-    
         $balance = Transaction::getBalance($accountId);
         
         return $this->jsonResponse($response, [
@@ -137,11 +228,18 @@ class BankingController
             'currency' => $account['currency']
         ]);
     }
+    
+    // ========== UPDATE & DELETE ==========
+    
     public function updateTransaction(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $transactionId = (int)$args['tid'];
         $data = $request->getParsedBody();
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         if (empty($data['description'])) {
             return $this->errorResponse($response, 'Description is required', 400);
@@ -170,11 +268,15 @@ class BankingController
             'new_description' => $description
         ]);
     }
-
+    
     public function deleteTransaction(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $transactionId = (int)$args['tid'];
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         $account = Account::find($accountId);
         if (!$account) {
@@ -209,12 +311,18 @@ class BankingController
             'new_balance' => round($newBalance, 2)
         ]);
     }
-
+    
+    // ========== CONVERSIONS ==========
+    
     public function convertToFiat(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $params = $request->getQueryParams();
         $to = strtoupper($params['to'] ?? '');
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         if (!$to) {
             return $this->errorResponse($response, 'Missing target currency', 400);
@@ -228,7 +336,7 @@ class BankingController
         $from = strtoupper($account['currency']);
         $balance = Transaction::getBalance($accountId);
         
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $url = "https://api.frankfurter.dev/v1/latest?base={$from}&symbols={$to}";
         
         try {
@@ -257,15 +365,19 @@ class BankingController
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
             return $this->errorResponse($response, 'External exchange API unavailable', 502);
         } catch (\Exception $e) {
-            return $this->errorResponse($response, 'Error fetching exchange rate', 422);
+            return $this->errorResponse($response, 'Error fetching exchange rate', 500);
         }
     }
-
+    
     public function convertToCrypto(Request $request, Response $response, array $args): Response
     {
-        $accountId = (int)$args['id'];
+        $accountId = $this->getAuthenticatedUserId();
         $params = $request->getQueryParams();
         $to = strtoupper($params['to'] ?? '');
+        
+        if (!$accountId) {
+            return $this->errorResponse($response, 'Not authenticated', 401);
+        }
         
         if (!$to) {
             return $this->errorResponse($response, 'Missing target cryptocurrency', 400);
@@ -281,7 +393,7 @@ class BankingController
         
         $marketSymbol = $to . $from;
         
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $url = "https://api.binance.com/api/v3/ticker/price?symbol={$marketSymbol}";
         
         try {
@@ -294,7 +406,6 @@ class BankingController
             
             $price = (float)$data['price'];
             $convertedAmount = $balance / $price;
-            
             $convertedAmount = round($convertedAmount, 8);
             
             return $this->jsonResponse($response, [
@@ -313,12 +424,11 @@ class BankingController
             if ($e->getCode() == 404) {
                 return $this->errorResponse($response, "Trading pair {$marketSymbol} not found on Binance", 400);
             }
-            return $this->errorResponse($response, 'Binance API error', 422);
+            return $this->errorResponse($response, 'Binance API error', 502);
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
             return $this->errorResponse($response, 'Binance API unavailable', 502);
         } catch (\Exception $e) {
             return $this->errorResponse($response, 'Error fetching crypto price', 500);
         }
     }
-
 }

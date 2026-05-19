@@ -24,5 +24,43 @@ class Account
         $stmt->execute();
         return $mysqli->insert_id;
     }
-    
+    public static function authenticate(string $ownerName, string $password): ?array
+    {
+        $mysqli = Database::getConnection();
+        $stmt = $mysqli->prepare("
+            SELECT id, owner_name, currency, password 
+            FROM accounts 
+            WHERE owner_name = ?
+        ");
+        $stmt->bind_param('s', $ownerName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $account = $result->fetch_assoc();
+        
+        if (!$account) {
+            return null;
+        }
+        
+        // Verifica password (in produzione userei password_verify())
+        if ($password === $account['password']) {
+            unset($account['password']); // Rimuovi password prima di restituire
+            return $account;
+        }
+        
+        return null;
+    }
+
+    public static function findById(int $id): ?array
+    {
+        $mysqli = Database::getConnection();
+        $stmt = $mysqli->prepare("
+            SELECT id, owner_name, currency, created_at 
+            FROM accounts 
+            WHERE id = ?
+        ");
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc() ?: null;
+    }
 }

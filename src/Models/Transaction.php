@@ -115,4 +115,34 @@ class Transaction
         return $stmt->execute();
     }
 
+        public static function getDeposits(int $accountId): array
+    {
+        $mysqli = Database::getConnection();
+        $stmt = $mysqli->prepare("
+            SELECT id, type, amount, description, created_at 
+            FROM transactions 
+            WHERE account_id = ? AND type = 'deposit'
+            ORDER BY created_at DESC
+        ");
+        $stmt->bind_param('i', $accountId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public static function getWithdrawals(int $accountId): array
+    {
+        $mysqli = Database::getConnection();
+        $stmt = $mysqli->prepare("
+            SELECT id, type, amount, description, created_at 
+            FROM transactions 
+            WHERE account_id = ? AND type = 'withdrawal'
+            ORDER BY created_at DESC
+        ");
+        $stmt->bind_param('i', $accountId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }   
+
 }

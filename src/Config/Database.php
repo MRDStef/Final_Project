@@ -11,18 +11,20 @@ class Database
     public static function getConnection(): mysqli
     {
         if (self::$connection === null) {
-            // Prima prova a prendere le variabili d'ambiente (Railway)
-            $host = getenv('MYSQLHOST') ?: 'localhost';
-            $user = getenv('MYSQLUSER') ?: 'root';
-            $password = getenv('MYSQLPASSWORD') ?: '';
-            $database = getenv('MYSQLDATABASE') ?: 'banking';
-            $port = getenv('MYSQLPORT') ?: 3306;
-            
-            self::$connection = new mysqli($host, $user, $password, $database, $port);
+            // Configurazione per XAMPP
+            self::$connection = new mysqli(
+                'localhost',     // host
+                'root',          // username
+                '',              // password (vuota su XAMPP)
+                'banking'        // database name
+            );
             
             if (self::$connection->connect_error) {
                 die("Connection failed: " . self::$connection->connect_error);
             }
+            
+            // Set charset
+            self::$connection->set_charset("utf8");
         }
         
         return self::$connection;
