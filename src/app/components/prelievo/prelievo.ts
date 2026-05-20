@@ -16,18 +16,14 @@ export class Prelievo {
   private bankService = inject(BankService);
   private router = inject(Router);
   
-  // Form fields
   amount: number | null = null;
   description: string = '';
   currentBalance: number = 0;
   
-  // UI states
-  loading = signal(false);
   success = signal(false);
   error = signal('');
   checkingBalance = signal(true);
-  
-  // Validazioni
+    
   amountError = signal('');
   descriptionError = signal('');
 
@@ -42,8 +38,7 @@ export class Prelievo {
         this.currentBalance = data.balance;
         this.checkingBalance.set(false);
       },
-      error: (err) => {
-        console.error('Errore caricamento saldo:', err);
+      error: () => {
         this.error.set('Impossibile verificare il saldo disponibile');
         this.checkingBalance.set(false);
       }
@@ -51,12 +46,10 @@ export class Prelievo {
   }
 
   onSubmit() {
-    // Reset errori
     this.amountError.set('');
     this.descriptionError.set('');
     this.error.set('');
-    
-    // Validazioni
+      
     let isValid = true;
     
     if (!this.amount || this.amount <= 0) {
@@ -73,29 +66,20 @@ export class Prelievo {
     }
     
     if (!isValid) return;
-    
-    // Chiamata API
-    this.loading.set(true);
-    
+      
     this.bankService.withdraw(this.amount!, this.description).subscribe({
-      next: (response: any) => {
-        console.log('Prelievo riuscito:', response);
-        this.loading.set(false);
+      next: () => {
         this.success.set(true);
         
-        // Reset form dopo 2 secondi e reindirizza
         setTimeout(() => {
           this.success.set(false);
           this.router.navigate(['/movimenti']);
         }, 2000);
       },
       error: (err) => {
-        console.error('Errore prelievo:', err);
-        this.loading.set(false);
-        
         if (err.status === 422) {
           this.error.set('Saldo insufficiente per questo prelievo');
-          this.loadBalance(); // Ricarica il saldo
+          this.loadBalance(); 
         } else {
           this.error.set(err.error?.error || 'Errore durante il prelievo');
         }

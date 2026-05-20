@@ -1,39 +1,33 @@
 <div class="sidebar">
       <div class="sidebar-header">
-        <h2>🏦 Mini Banking</h2>
+        <h2>Mini Banking</h2>
         <p>Benvenuto, {{ userName() }}</p>
       </div>
       
       <nav class="sidebar-nav">
+        <a routerLink="/saldo" routerLinkActive="active" class="nav-item">
+          <span class="nav-text">Saldo</span>
+        </a>
+
         <a routerLink="/movimenti" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">📋</span>
           <span class="nav-text">Movimenti</span>
         </a>
         
         <a routerLink="/deposita" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">💰</span>
           <span class="nav-text">Deposita</span>
         </a>
         
         <a routerLink="/preleva" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">🏦</span>
           <span class="nav-text">Preleva</span>
         </a>
         
-        <a routerLink="/saldo" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">💳</span>
-          <span class="nav-text">Saldo</span>
-        </a>
-        
         <a routerLink="/conversione" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">💱</span>
           <span class="nav-text">Conversioni</span>
         </a>
       </nav>
       
       <div class="sidebar-footer">
         <button (click)="logout()" class="logout-btn">
-          <span class="nav-icon">🚪</span>
           <span class="nav-text">Logout</span>
         </button>
       </div>

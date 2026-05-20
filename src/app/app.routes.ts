@@ -5,6 +5,7 @@ import { Movimenti } from './components/movimenti/movimenti';
 import { Deposito } from './components/deposito/deposito';
 import { Prelievo } from './components/prelievo/prelievo';
 import { Saldo } from './components/saldo/saldo';
+import { Conversione } from './components/conversione/conversione';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'deposita', component: Deposito, canActivate: [AuthGuard] },
   { path: 'preleva', component: Prelievo, canActivate: [AuthGuard] },
   { path: 'saldo', component: Saldo, canActivate: [AuthGuard] },
+  { path: 'conversione', component: Conversione, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

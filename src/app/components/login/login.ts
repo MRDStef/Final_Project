@@ -18,7 +18,6 @@ export class Login {
   ownerName = '';
   password = '';
   
-  loading = signal(false);
   error = signal('');
 
   onSubmit() {
@@ -27,19 +26,14 @@ export class Login {
       return;
     }
     
-    this.loading.set(true);
     this.error.set('');
     
     this.bankService.login(this.ownerName, this.password).subscribe({
       next: (response) => {
-        // Salva il nome utente nella sessionStorage
         sessionStorage.setItem('user_name', response.user.owner_name);
-        this.loading.set(false);
         this.router.navigate(['/movimenti']);
       },
       error: (err) => {
-        console.error('Login error:', err);
-        this.loading.set(false);
         this.error.set(err.error?.error || 'Credenziali non valide');
       }
     });

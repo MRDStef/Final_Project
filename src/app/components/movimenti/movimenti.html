@@ -1,94 +1,84 @@
 <div class="movimenti-container">
   <h2>Lista Movimenti</h2>
-  
-  <!-- Stato di caricamento -->
-  @if (loading()) {
-    <div class="loading">
-      Caricamento movimenti in corso...
-    </div>
-  }
-  
-  <!-- Messaggio di errore -->
+
   @if (error()) {
-    <div class="error">
-      {{ error() }}
-      <button (click)="loadMovimenti()" class="retry-btn">Riprova</button>
-    </div>
+  <div class="error">
+    {{ error() }}
+    <button (click)="loadMovimenti()" class="retry-btn">Riprova</button>
+  </div>
   }
-  
-  <!-- Lista movimenti -->
-  @if (!loading() && !error()) {
-    @if (movimenti().length === 0) {
-      <div class="empty">
-        Nessun movimento trovato
+
+  @if (!error()) {
+  @if (movimenti().length === 0) {
+  <div class="empty">
+    Nessun movimento trovato
+  </div>
+  } @else {
+  <div class="movimenti-list">
+    @for (movimento of movimenti(); track movimento.id) {
+    <div class="movimento-card" (click)="openModal(movimento)">
+      <div class="movimento-info">
+        <div class="movimento-description">
+          {{ movimento.description }}
+        </div>
+        <div class="movimento-date">
+          {{ formatDate(movimento.created_at) }}
+        </div>
       </div>
-    } @else {
-      <div class="movimenti-list">
-        @for (movimento of movimenti(); track movimento.id) {
-          <div class="movimento-card" (click)="openModal(movimento)">
-            <div class="movimento-info">
-              <div class="movimento-description">
-                {{ movimento.description }}
-              </div>
-              <div class="movimento-date">
-                {{ formatDate(movimento.created_at) }}
-              </div>
-            </div>
-            <div class="movimento-amount" [class]="getAmountClass(movimento.type)">
-              {{ formatAmount(movimento.amount, movimento.type) }}
-            </div>
-          </div>
+      <div class="movimento-amount" [class]="getAmountClass(movimento.type)">
+        {{ formatAmount(movimento.amount, movimento.type) }}
+      </div>
+    </div>
+    }
+  </div>
+  }
+  }
+
+  @if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Dettaglio Movimento</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        @if (selectedMovimento()) {
+        <div class="detail-row">
+          <span class="detail-label">ID:</span>
+          <span class="detail-value">{{ selectedMovimento().id }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Tipo:</span>
+          <span class="detail-value" [class]="selectedMovimento().type">
+            {{ selectedMovimento().type === 'deposit' ? 'Deposito' : 'Prelievo' }}
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Importo:</span>
+          <span class="detail-value" [class]="getAmountClass(selectedMovimento().type)">
+            {{ formatAmount(selectedMovimento().amount, selectedMovimento().type) }}
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Descrizione:</span>
+          <span class="detail-value">{{ selectedMovimento().description }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Data:</span>
+          <span class="detail-value">{{ formatDate(selectedMovimento().created_at) }}</span>
+        </div>
         }
       </div>
-    }
-  }
-  
-  <!-- MODAL DETTAGLI -->
-  @if (showModal()) {
-    <div class="modal-overlay" (click)="closeModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3>Dettaglio Movimento</h3>
-          <button class="close-btn" (click)="closeModal()">&times;</button>
-        </div>
-        
-        <div class="modal-body">
-          @if (selectedMovimento()) {
-            <div class="detail-row">
-              <span class="detail-label">ID:</span>
-              <span class="detail-value">{{ selectedMovimento().id }}</span>
-            </div>
-            
-            <div class="detail-row">
-              <span class="detail-label">Tipo:</span>
-              <span class="detail-value" [class]="selectedMovimento().type">
-                {{ selectedMovimento().type === 'deposit' ? 'Deposito' : 'Prelievo' }}
-              </span>
-            </div>
-            
-            <div class="detail-row">
-              <span class="detail-label">Importo:</span>
-              <span class="detail-value" [class]="getAmountClass(selectedMovimento().type)">
-                {{ formatAmount(selectedMovimento().amount, selectedMovimento().type) }}
-              </span>
-            </div>
-            
-            <div class="detail-row">
-              <span class="detail-label">Descrizione:</span>
-              <span class="detail-value">{{ selectedMovimento().description }}</span>
-            </div>
-            
-            <div class="detail-row">
-              <span class="detail-label">Data:</span>
-              <span class="detail-value">{{ formatDate(selectedMovimento().created_at) }}</span>
-            </div>
-          }
-        </div>
-        
-        <div class="modal-footer">
-          <button class="modal-close-btn" (click)="closeModal()">Chiudi</button>
-        </div>
+
+      <div class="modal-footer">
+        <button class="modal-close-btn" (click)="closeModal()">Chiudi</button>
       </div>
     </div>
+  </div>
   }
 </div>

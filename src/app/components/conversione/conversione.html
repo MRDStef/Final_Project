@@ -1,1 +1,160 @@
-<p>conversione works!</p>
+
+<div class="conversione-container">
+  <div class="conversion-card">
+    <div class="card-header">
+      <h2>💱 Converti il tuo Saldo</h2>
+      <p>Converti {{ currentBalance | number:'1.2-2' }} {{ currencyCode }} in altre valute o criptovalute</p>
+    </div>
+    
+    <div class="card-body">
+      <!-- Toggle Fiat / Crypto -->
+      <div class="toggle-container">
+        <button 
+          [class.active]="conversionType === 'fiat'" 
+          (click)="conversionType = 'fiat'; result = null; error.set('')"
+          class="toggle-btn">
+          💵 Valuta Fiat
+        </button>
+        <button 
+          [class.active]="conversionType === 'crypto'" 
+          (click)="conversionType = 'crypto'; result = null; error.set('')"
+          class="toggle-btn">
+          ₿ Criptovaluta
+        </button>
+      </div>
+      
+      <!-- Saldo attuale -->
+      <div class="balance-info">
+        <span class="label">Saldo da convertire:</span>
+        <span class="value">{{ currentBalance | number:'1.2-2' }} {{ currencyCode }}</span>
+      </div>
+      
+      <!-- Selezione conversione -->
+      <div class="conversion-form">
+        @if (conversionType === 'fiat') {
+          <div class="form-group">
+            <label>Converti in:</label>
+            <select [(ngModel)]="selectedCurrency" (change)="result = null; error.set('')">
+              @for (curr of fiatCurrencies; track curr) {
+                <option [value]="curr">{{ curr }}</option>
+              }
+            </select>
+          </div>
+        } @else {
+          <div class="form-group">
+            <label>Converti in:</label>
+            <select [(ngModel)]="selectedCrypto" (change)="result = null; error.set('')">
+              @for (crypto of cryptoCurrencies; track crypto) {
+                <option [value]="crypto">{{ crypto }}</option>
+              }
+            </select>
+          </div>
+        }
+        
+        <button (click)="convert()" class="convert-btn" [disabled]="loading()">
+          @if (loading()) {
+            <span>⏳ Conversione in corso...</span>
+          } @else {
+            <span>🔄 Converti ora</span>
+          }
+        </button>
+      </div>
+      
+      <!-- Messaggio errore -->
+      @if (error()) {
+        <div class="error-message">
+          ⚠️ {{ error() }}
+        </div>
+      }
+      
+      <!-- Risultato conversione Fiat -->
+      @if (result && conversionType === 'fiat') {
+        <div class="result-card">
+          <h3>Risultato Conversione</h3>
+          
+          <div class="result-details">
+            <div class="detail-row">
+              <span class="detail-label">Provider:</span>
+              <span class="detail-value">{{ result.provider }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Da:</span>
+              <span class="detail-value">{{ result.from_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">A:</span>
+              <span class="detail-value highlight">{{ result.to_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Importo originale:</span>
+              <span class="detail-value">{{ result.original_balance | number:'1.2-2' }} {{ result.from_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Tasso di cambio:</span>
+              <span class="detail-value">1 {{ result.from_currency }} = {{ result.rate | number:'1.4-4' }} {{ result.to_currency }}</span>
+            </div>
+            
+            <div class="detail-row total">
+              <span class="detail-label">Convertito:</span>
+              <span class="detail-value total-value">{{ result.converted_balance | number:'1.2-2' }} {{ result.to_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Data:</span>
+              <span class="detail-value">{{ result.date | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+            <!-- Risultato conversione Crypto -->
+      @if (result && conversionType === 'crypto') {
+        <div class="result-card crypto">
+          <h3>Risultato Conversione</h3>
+          
+          <div class="result-details">
+            <div class="detail-row">
+              <span class="detail-label">Provider:</span>
+              <span class="detail-value">{{ result.provider }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Da:</span>
+              <span class="detail-value">{{ result.from_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">A:</span>
+              <span class="detail-value highlight crypto">{{ result.to_crypto }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Mercato:</span>
+              <span class="detail-value">{{ result.market_symbol }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Importo originale:</span>
+              <span class="detail-value">{{ result.original_balance | number:'1.2-2' }} {{ result.from_currency }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Prezzo:</span>
+              <span class="detail-value">1 {{ result.to_crypto }} = {{ result.price | number:'1.2-2' }} {{ result.from_currency }}</span>
+            </div>
+            
+            <div class="detail-row total">
+              <span class="detail-label">Convertito:</span>
+              <span class="detail-value total-value crypto-value">
+                {{ result.converted_amount | number:'1.8-8' }} {{ result.to_crypto }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

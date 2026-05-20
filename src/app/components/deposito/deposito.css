@@ -1,4 +1,5 @@
-.deposita-container, .preleva-container {
+.deposita-container,
+.preleva-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,14 +10,14 @@
 .card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   width: 100%;
   overflow: hidden;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgb(129, 5, 5);
   color: white;
   padding: 25px;
   text-align: center;
@@ -80,7 +81,6 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #667eea;
 }
 
 input.error-input {
@@ -116,13 +116,13 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgb(129, 5, 5);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:disabled {

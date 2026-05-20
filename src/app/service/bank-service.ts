@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class BankService {
-  private apiUrl = 'http://localhost';
+  private apiUrl = 'http://localhost:80';
 
   constructor(private http: HttpClient) {}
 
@@ -14,90 +14,92 @@ export class BankService {
   login(owner_name: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, 
       { owner_name, password }, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/logout`, 
       {}, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   getCurrentUser(): Observable<any> {
     return this.http.get(`${this.apiUrl}/auth/me`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   checkAuth(): Observable<any> {
     return this.http.get(`${this.apiUrl}/auth/check`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
+
+  
   // TRANSACTIONS
   getTransactions(): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/transactions`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   getBalance(): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/balance`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   deposit(amount: number, description: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/accounts/me/deposits`, 
       { amount, description }, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   withdraw(amount: number, description: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/accounts/me/withdrawals`, 
       { amount, description }, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   updateTransactionDescription(transactionId: number, description: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/accounts/me/transactions/${transactionId}`, 
       { description }, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   deleteTransaction(transactionId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/accounts/me/transactions/${transactionId}`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   getDeposits(): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/deposits`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   getWithdrawals(): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/withdrawals`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   convertToFiat(toCurrency: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/balance/convert/fiat?to=${toCurrency}`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 
   convertToCrypto(crypto: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/accounts/me/balance/convert/crypto?to=${crypto}`, 
-      { withCredentials: true }  // ← AGGIUNGI QUESTO
+      { withCredentials: true }  
     );
   }
 }

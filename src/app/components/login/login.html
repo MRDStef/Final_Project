@@ -1,14 +1,14 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <h2>🏦 Mini Banking API</h2>
+      <h2>Mini Banking API</h2>
       <p>Accedi al tuo conto</p>
     </div>
     
     <div class="login-body">
       @if (error()) {
         <div class="alert error">
-          ⚠ {{ error() }}
+          {{ error() }}
         </div>
       }
       
@@ -37,21 +37,17 @@
           >
         </div>
         
-        <button type="submit" class="btn-login" [disabled]="loading()">
-          @if (loading()) {
-            <span>⏳ Accesso in corso...</span>
-          } @else {
-            <span>🔐 Accedi</span>
-          }
+        <button type="submit" class="btn-login">
+          Accedi
         </button>
       </form>
       
       <div class="demo-credentials">
         <p>Credenziali di test:</p>
         <ul>
-          <li><strong>Mario Rossi</strong> / mario123</li>
-          <li><strong>Luigi Verdi</strong> / luigi456</li>
-          <li><strong>Anna Bianchi</strong> / anna789</li>
+          <li>Mario Rossi - mario123</li>
+          <li>Luigi Verdi - luigi456</li>
+          <li>Anna Bianchi - anna789</li>
         </ul>
       </div>
     </div>
