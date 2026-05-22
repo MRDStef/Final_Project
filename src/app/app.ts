@@ -18,7 +18,6 @@ export class App implements OnInit {
   showSidebar = () => this.router.url !== '/login';
   
   ngOnInit() {
-    // Salva il nome utente nella sessione dopo il login
     this.bankService.getCurrentUser().subscribe({
       next: (user) => {
         sessionStorage.setItem('user_name', user.owner_name);

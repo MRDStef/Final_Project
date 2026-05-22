@@ -13,19 +13,16 @@ import { BankService } from '../../service/bank-service';
 export class Conversione {
   private bankService = inject(BankService);
   
-  // Stato
   conversionType: 'fiat' | 'crypto' = 'fiat';
   selectedCurrency: string = 'USD';
   selectedCrypto: string = 'BTC';
   currentBalance: number = 0;
   currencyCode: string = 'EUR';
   
-  // Risultati
   result: any = null;
   loading = signal(false);
   error = signal('');
   
-  // Liste disponibili
   fiatCurrencies = ['USD', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'CNY', 'TRY'];
   cryptoCurrencies = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'MATIC'];
   
