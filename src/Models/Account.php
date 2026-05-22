@@ -41,9 +41,8 @@ class Account
             return null;
         }
         
-        // Verifica password (in produzione userei password_verify())
         if ($password === $account['password']) {
-            unset($account['password']); // Rimuovi password prima di restituire
+            unset($account['password']); 
             return $account;
         }
         

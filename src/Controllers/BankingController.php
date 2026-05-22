@@ -42,7 +42,6 @@ class BankingController
     }
     
     // ========== TRANSACTIONS ==========
-    
     public function getTransactions(Request $request, Response $response, array $args): Response
     {
         $accountId = $this->getAuthenticatedUserId();
@@ -82,7 +81,7 @@ class BankingController
         return $this->jsonResponse($response, $transaction);
     }
     
-    // ========== DEPOSITS ==========
+    // ========== DEPOSITI ==========
     
     public function getDeposits(Request $request, Response $response, array $args): Response
     {
@@ -141,7 +140,7 @@ class BankingController
         ], 201);
     }
     
-    // ========== WITHDRAWALS ==========
+    // ========== PRELIEVI ==========
     
     public function getWithdrawals(Request $request, Response $response, array $args): Response
     {
@@ -205,7 +204,7 @@ class BankingController
         ], 201);
     }
     
-    // ========== BALANCE ==========
+    // ========== SALDO ==========
     
     public function getBalance(Request $request, Response $response, array $args): Response
     {
@@ -229,7 +228,7 @@ class BankingController
         ]);
     }
     
-    // ========== UPDATE & DELETE ==========
+    // ========== UPDATE E DELETE ==========
     
     public function updateTransaction(Request $request, Response $response, array $args): Response
     {
@@ -312,7 +311,7 @@ class BankingController
         ]);
     }
     
-    // ========== CONVERSIONS ==========
+    // ========== CONVERSIONI ==========
     
     public function convertToFiat(Request $request, Response $response, array $args): Response
     {

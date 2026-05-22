@@ -7,10 +7,8 @@ use MiniBanking\Controllers\BankingController;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// Avvia la sessione
 session_start();
 
-// Crea l'app
 $app = AppFactory::create();
 
 // CORS middleware
@@ -23,19 +21,15 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Credentials', 'true');
 });
 
-// Gestisci richieste OPTIONS (preflight)
 $app->options('/{routes:.+}', function ($request, $response) {
     return $response;
 });
 
-// Middleware per parsing JSON
 $app->addBodyParsingMiddleware();
 
-// Error middleware
 $app->addErrorMiddleware(true, true, true);
 
 // ========== ROUTE DI AUTENTICAZIONE ==========
-// VERIFICA CHE QUESTE ROUTE CI SIANO!
 $app->post('/auth/login', [AuthController::class, 'login']);
 $app->post('/auth/logout', [AuthController::class, 'logout']);
 $app->get('/auth/me', [AuthController::class, 'getCurrentUser']);
@@ -54,5 +48,4 @@ $app->get('/accounts/me/withdrawals', [BankingController::class, 'getWithdrawals
 $app->get('/accounts/me/balance/convert/fiat', [BankingController::class, 'convertToFiat']);
 $app->get('/accounts/me/balance/convert/crypto', [BankingController::class, 'convertToCrypto']);
 
-// Avvia l'app
 $app->run();

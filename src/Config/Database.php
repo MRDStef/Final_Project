@@ -11,12 +11,11 @@ class Database
     public static function getConnection(): mysqli
     {
         if (self::$connection === null) {
-            // Configurazione per XAMPP
             self::$connection = new mysqli(
-                'localhost',     // host
-                'root',          // username
-                '',              // password (vuota su XAMPP)
-                'banking'        // database name
+                'localhost',
+                'root',     
+                '',         
+                'banking'   
             );
             
             if (self::$connection->connect_error) {
