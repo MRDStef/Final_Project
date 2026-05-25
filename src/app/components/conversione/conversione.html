@@ -2,18 +2,17 @@
 <div class="conversione-container">
   <div class="conversion-card">
     <div class="card-header">
-      <h2>💱 Converti il tuo Saldo</h2>
+      <h2>Converti il tuo Saldo</h2>
       <p>Converti {{ currentBalance | number:'1.2-2' }} {{ currencyCode }} in altre valute o criptovalute</p>
     </div>
     
     <div class="card-body">
-      <!-- Toggle Fiat / Crypto -->
       <div class="toggle-container">
         <button 
           [class.active]="conversionType === 'fiat'" 
           (click)="conversionType = 'fiat'; result = null; error.set('')"
           class="toggle-btn">
-          💵 Valuta Fiat
+          Valuta Fiat
         </button>
         <button 
           [class.active]="conversionType === 'crypto'" 
@@ -51,23 +50,17 @@
           </div>
         }
         
-        <button (click)="convert()" class="convert-btn" [disabled]="loading()">
-          @if (loading()) {
-            <span>⏳ Conversione in corso...</span>
-          } @else {
-            <span>🔄 Converti ora</span>
-          }
+        <button (click)="convert()" class="convert-btn">
+            Converti ora
         </button>
       </div>
       
-      <!-- Messaggio errore -->
       @if (error()) {
         <div class="error-message">
-          ⚠️ {{ error() }}
+          {{ error() }}
         </div>
       }
       
-      <!-- Risultato conversione Fiat -->
       @if (result && conversionType === 'fiat') {
         <div class="result-card">
           <h3>Risultato Conversione</h3>
@@ -110,7 +103,7 @@
           </div>
         </div>
       }
-            <!-- Risultato conversione Crypto -->
+
       @if (result && conversionType === 'crypto') {
         <div class="result-card crypto">
           <h3>Risultato Conversione</h3>
