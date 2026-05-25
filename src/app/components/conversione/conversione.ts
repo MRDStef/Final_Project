@@ -20,7 +20,6 @@ export class Conversione {
   currencyCode: string = 'EUR';
   
   result: any = null;
-  loading = signal(false);
   error = signal('');
   
   fiatCurrencies = ['USD', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'CNY', 'TRY'];
@@ -36,42 +35,29 @@ export class Conversione {
         this.currentBalance = data.balance;
         this.currencyCode = data.currency;
       },
-      error: (err) => {
-        console.error('Errore caricamento saldo:', err);
-        this.error.set('Impossibile caricare il saldo');
-      }
     });
   }
   
   convert() {
-    this.loading.set(true);
     this.error.set('');
     this.result = null;
     
     if (this.conversionType === 'fiat') {
       this.bankService.convertToFiat(this.selectedCurrency).subscribe({
         next: (data) => {
-          console.log('Conversione fiat:', data);
           this.result = data;
-          this.loading.set(false);
         },
         error: (err) => {
-          console.error('Errore conversione fiat:', err);
           this.error.set(err.error?.error || 'Errore nella conversione');
-          this.loading.set(false);
         }
       });
     } else {
       this.bankService.convertToCrypto(this.selectedCrypto).subscribe({
         next: (data) => {
-          console.log('Conversione crypto:', data);
           this.result = data;
-          this.loading.set(false);
         },
         error: (err) => {
-          console.error('Errore conversione crypto:', err);
           this.error.set(err.error?.error || 'Errore nella conversione');
-          this.loading.set(false);
         }
       });
     }
