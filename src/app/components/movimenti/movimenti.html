@@ -21,9 +21,6 @@
         <div class="movimento-description">
           {{ movimento.description }}
         </div>
-        <div class="movimento-date">
-          {{ formatDate(movimento.created_at) }}
-        </div>
       </div>
       <div class="movimento-amount" [class]="getAmountClass(movimento.type)">
         {{ formatAmount(movimento.amount, movimento.type) }}

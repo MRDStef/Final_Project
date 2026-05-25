@@ -26,6 +26,10 @@ export class Deposito {
   descriptionError = signal('');
 
   onSubmit() {
+    const submitButton = document.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.setAttribute('disabled', 'true');
+    }
     this.amountError.set('');
     this.descriptionError.set('');
     this.error.set('');
